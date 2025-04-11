@@ -3,12 +3,12 @@ package main
 import (
 	"flag"
 	"io"
-	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 )
 
-//global vars
+// global vars
 var VERSION string = "v0.0.1"
 var LOGFILE string = "/var/log/treebeard"
 
@@ -16,11 +16,11 @@ func main() {
 	//set up logging
 	var _, err = os.Stat(LOGFILE)
 	if os.IsNotExist(err) {
-		var file, err = os.Create(logfile)
+		var file, err = os.Create(LOGFILE)
 		checkError(err)
 		defer file.Close()
 	}
-	f, err := os.OpenFile(logfile, os.O_WRONLY|os.O_APPEND, 0644)
+	f, err := os.OpenFile(LOGFILE, os.O_WRONLY|os.O_APPEND, 0644)
 	checkError(err)
 	defer f.Close()
 	log.SetOutput(f)
@@ -34,15 +34,15 @@ func main() {
 
 	//handlers
 	http.HandleFunc("/", rootHandler)
-	http.HandleFunc("/update"), updateHandler)
+	http.HandleFunc("/update", updateHandler)
 
-	log.Println("Treebeard ", version, " Started")
+	log.Println("Treebeard ", VERSION, " Started")
 	http.ListenAndServe(":"+*bind, nil)
 }
 
-//http root handler
+// http root handler
 func rootHandler(w http.ResponseWriter, r *http.Request) {
-	io.WriteString(w, "Treebeard "+version)
+	io.WriteString(w, "Treebeard "+VERSION)
 }
 
 func checkError(err error) {
