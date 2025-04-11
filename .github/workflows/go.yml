@@ -26,7 +26,7 @@ jobs:
         run: go mod tidy
 
       - name: Check Syntax
-        run: go ver ./...
+        run: go vet ./...
 
   build:
     name: Build treebeard Binary
