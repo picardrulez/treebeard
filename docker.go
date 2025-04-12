@@ -103,7 +103,14 @@ func dockerRunContainer(ctx context.Context, cli *client.Client, imageName strin
 		ExposedPorts: nat.PortSet{
 			"80/tcp": struct{}{},
 		},
-	}, nil, nil, nil, "")
+	}, &container.HostConfig{
+		PortBindings: map[nat.Port][]nat.PortBinding{
+			"80/tcp": {{
+				HostIP:   "0.0.0.0",
+				HostPort: "80",
+			}},
+		},
+	}, nil, nil, "")
 	if err != nil {
 		return "", err
 	}
